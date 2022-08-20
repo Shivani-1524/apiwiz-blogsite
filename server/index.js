@@ -15,27 +15,29 @@ app.use(cors());
 connectDB()
 
 app.get('/getBlogs', (req, res) => {
-    BlogsModel.find({}, (err, result) => {
+    BlogsModel.find({}, (err, fetchedBlogs) => {
         if (err) {
             res.json({
                 message: err.message,
                 stack: process.env.NODE_ENV === "production" ? null : err.stack,
             });
         } else {
-            res.json(result);
+            res.json(fetchedBlogs);
         }
     })
 })
 
-app.get('/getBlog/:id', (req, res) => {
-    BlogsModel.findById(req.params.id, (err, result) => {
+app.get('/getBlog', (req, res) => {
+    const { blogId } = req.body;
+    console.log("BLOG ID", blogId)
+    BlogsModel.findById(blogId, (err, fetchedBlog) => {
         if (err) {
             res.json({
                 message: err.message,
                 stack: process.env.NODE_ENV === "production" ? null : err.stack,
             });
         } else {
-            res.json(result);
+            res.json(fetchedBlog);
         }
     })
 })
@@ -52,6 +54,20 @@ app.post('/createBlog', async (req, res) => {
             stack: process.env.NODE_ENV === "production" ? null : err.stack,
         });
     }
+})
+
+app.delete('/deleteBlog', async (req, res) => {
+    const { blogId } = req.body;
+    BlogsModel.findByIdAndRemove(blogId, (err, deletedRecord) => {
+        if (err) {
+            res.json({
+                message: err.message,
+                stack: process.env.NODE_ENV === "production" ? null : err.stack,
+            });
+        } else {
+            res.json(deletedRecord);
+        }
+    })
 })
 
 
