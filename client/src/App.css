@@ -1,0 +1,27 @@
+
+:root {
+  --black-color: #141414;
+  --white: #f7f7ff;
+  --primary-color: #8f4bfd;
+  --secondary-color: #f4550b;
+}
+
+.App {
+  text-align: center;
+}
+
+
+.error-txt{
+  color: red;
+  font-weight: bold;
+}
+
+.txt-center{
+  text-align: center;
+}
+
+.center-content{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
