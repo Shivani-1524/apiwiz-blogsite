@@ -1,6 +1,8 @@
 import React, {useState, useEffect} from 'react'
 import { getBlogs } from '../../Services/getBlogs';
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
+import { PrimaryButton, BlogCard, Header } from '../../Components/index';
+import './listingpage.css'
 
 
 const ListingPage = () => {
@@ -24,19 +26,24 @@ const ListingPage = () => {
   return (
     <>
     {blogList ? 
-    <div>
-      <h1>ListingPage</h1>
-        <Link to="/create">Add a Blog</Link>
-        {blogList.length > 0 ? <div className="blog-list">
+    <div className='page-layout'>
+      <Header children={<PrimaryButton text="Write a Blog" onclick={()=>navigate('/create')} />} />
+    
+      <div className="divider"></div>
+      <section className="blog-listing">
+        {/* smallscr center-content */}
+        {blogList.length > 0 ? 
+        <div className="blog-list">
           { blogList.map((item) => {
             return (
-              <Link key={item._id} to={`/blog/${item._id}`} className="blog-thumbnail">
-                <h3 className="blog-title">{item.title}</h3>
-              </Link>
+              <BlogCard key={item._id} item={item}  />
             )
-          }
-          )}
-        </div> : <p>No Blogs To Show Yet</p>}
+          })}
+        </div> : 
+        <p>No Blogs To Show Yet</p>}
+
+      </section>
+      
     </div> : 
     <p>Loading...</p>}
     

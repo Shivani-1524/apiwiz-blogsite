@@ -1,6 +1,11 @@
 .blog-content{
-    width: 80%;
+    margin-top: 1rem;
+    width: 100%;
+    resize: none;
+    outline: none;
+    border: none;
+    font-size: 1.1rem;
+    word-wrap: break-word;
     height: 100vh;
-    padding: 10px;
-    background-color: aqua;
+    overflow:hidden
 }

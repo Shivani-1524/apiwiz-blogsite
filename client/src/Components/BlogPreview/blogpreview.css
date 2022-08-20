@@ -1,4 +1,5 @@
 .preview-container{
-    width: 80%;
+    width: 100%;
     height: 10rem;
+    word-wrap: break-word;
 }

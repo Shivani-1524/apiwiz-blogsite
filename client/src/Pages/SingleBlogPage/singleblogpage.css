@@ -1,0 +1,10 @@
+.cover-img{
+    margin: auto;
+    height: 20rem;
+    width: 100%;
+    border-radius: 12px;
+  }
+  .display-blog-layout{
+    width: 86%;
+    margin: auto;
+  }

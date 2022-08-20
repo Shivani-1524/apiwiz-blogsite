@@ -1,0 +1,21 @@
+
+.bloglist-header{
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.util-items{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+
+.blog-list{
+    padding: 3rem 2rem 20px 2rem;
+    display: grid;
+    column-gap: 20px;
+    row-gap: 3rem;
+    justify-content: center;
+    grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+}

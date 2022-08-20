@@ -27,10 +27,8 @@ app.get('/getBlogs', (req, res) => {
     })
 })
 
-app.get('/getBlog', (req, res) => {
-    const { blogId } = req.body;
-    console.log("BLOG ID", blogId)
-    BlogsModel.findById(blogId, (err, result) => {
+app.get('/getBlog/:id', (req, res) => {
+    BlogsModel.findById(req.params.id, (err, result) => {
         if (err) {
             res.json({
                 message: err.message,

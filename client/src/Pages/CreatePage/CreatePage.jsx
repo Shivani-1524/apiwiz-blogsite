@@ -1,9 +1,11 @@
 import React, {useState} from 'react'
-import axios from 'axios';
 import {useNavigate } from 'react-router-dom'
-import { BlogPreview, BlogInput } from '../../Components/index'
+import { postBlog } from '../../Services/postBlog';
+import { postImage } from '../../Services/postImage';
+import { BlogPreview, BlogInput, Header, PrimaryButton, PrimaryOutlineButton } from '../../Components/index'
+import {FiImage, BsFillEyeFill, BsFillPencilFill} from '../../Assets/icons'
 import './createpage.css'
-import './createpage.css'
+
 
 const CreatePage = () => {
   const navigate = useNavigate()
@@ -11,40 +13,94 @@ const CreatePage = () => {
     title: "",
     subtitle: "",
     banner: "",
-    content:"Welcome to Apiwiz blogs",
+    content:"",
   }
   const [blogContent, setBlogContent] = useState(initialBlogContent)
-  const postBlog = async (blogData) => {
-    console.log("input blog", blogData)
-    try{
-      const {data} = await axios.post("http://localhost:3001/createBlog",blogData)
+  const [previewMode, setPreviewMode] = useState(false)
+  const [imageSelected, setImageSelected] = useState(null)
+
+  
+  const handleUploadResult = (success, data) => {
+    if(success){
       console.log("blog posted",data)
       setBlogContent(initialBlogContent)
       navigate('/')
-    }catch(err){
-      console.log(err)
+    }else{
+      console.log(data)
       navigate('/error')
     }
   }
 
+  const uploadBlog = async (blogData) => {
+    if(imageSelected){
+      const res = await uploadImage(imageSelected)
+      const {data, success} = await postBlog({...blogData, banner: res.url})
+      handleUploadResult(success, data)
+    }else{
+      const {data, success} = await postBlog(blogData)
+      handleUploadResult(success, data)
+    }
+  }
+
+  const uploadImage= async (file) => {
+    console.log("chosen file",file)
+    if (file.name.match(/\.(jpg|jpeg|png|gif)$/)) {
+      const Url = "https://api.cloudinary.com/v1_1/ds9sho1ch/image/upload"
+      const formData = new FormData()
+      formData.append("file", file)
+      formData.append("upload_preset", "dbcscig2")
+      const {data, success} = await postImage(Url, formData)
+      if(success){
+        return data
+      }else{
+        console.log(data)
+        navigate('/error')
+      }
+    }else{
+      console.log("invalid files")
+    }
+  }
+
+
+
   return (
-    <>
-        <h1>CREATE BLOGS PAGE</h1>
-        <button onClick={()=>postBlog(blogContent)}>SAVE</button>
-        <label htmlFor="blog-title">Title</label>
-        <input id="blog-title" type="text" value={blogContent.title} 
+    <div className='page-layout'>
+      <Header children={<PrimaryButton text="Publish" onclick={()=>uploadBlog(blogContent)} />}  />
+      <div className="divider mg-b-xl"></div>
+    {
+      imageSelected ? <PrimaryOutlineButton text="Remove Image" onclick={()=>{setImageSelected(null)}} /> : 
+      <div>
+        <label className='btn btn-primary-outline' htmlFor="file-upload">Upload Cover <FiImage className='icon-md' /> </label>
+        <input className=' img-upload-input' id="file-upload" type="file" accept="image/*" hidden onChange={(e)=>{setImageSelected(e.target.files[0])}} />
+      </div> 
+    }
+   
+
+      {imageSelected ?  
+          <img className='img-resp img-preview'
+          src={URL.createObjectURL(new Blob([imageSelected], { type: "application/zip" }))} alt="banner preview" /> : null}
+
+        <label className='sr-only' htmlFor="blog-title">Title</label>
+        <input placeholder='Article title...' className='blog-title-input mg-t-10' id="blog-title" type="text" value={blogContent.title} 
         onChange={(e)=>{
             setBlogContent({...blogContent, title: e.target.value})  
         }} />
-        <label htmlFor="blog-title">Subtitle</label>
-        <input id="blog-title" type="text" value={blogContent.subtitle} 
+
+        <label className='sr-only' htmlFor="blog-subtitle">Subtitle</label>
+        <input placeholder='Article subtitle...(optional)' className='blog-subtitle-input' id="blog-subtitle" type="text" value={blogContent.subtitle} 
         onChange={(e)=>{
             setBlogContent({...blogContent, subtitle: e.target.value})  
         }} />
-        <BlogPreview blogContent={blogContent} />
-        <BlogInput setBlogContent={setBlogContent} blogContent={blogContent} />
-        
-    </>
+
+        <div className="divider mg-t-10 mg-b-10"></div>
+        <div className="tools-row">
+            <BsFillEyeFill onClick={()=>{setPreviewMode(true)}} className='icon-md' />
+            <BsFillPencilFill onClick={()=>{setPreviewMode(false)}} className='icon-md' />
+          </div>
+          {previewMode && <div className="divider mg-b-10 mg-t-10"></div>}
+        {previewMode ?  <BlogPreview blogContent={blogContent} /> :
+        <BlogInput setBlogContent={setBlogContent} blogContent={blogContent} />}
+    </div>
   )
 }
 

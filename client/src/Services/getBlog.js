@@ -2,9 +2,7 @@ import axios from 'axios'
 
 const getBlog = async (blogId) => {
     try {
-        const { data } = await axios.get("http://localhost:3001/getBlog", {
-            blogId
-        });
+        const { data } = await axios.get(`http://localhost:3001/getBlog/${blogId}`);
         return {
             data,
             success: true,

@@ -5,7 +5,7 @@ import './blogpreview.css'
 const BlogPreview = ({ blogContent }) => {
     console.log("BLOG INPUT", blogContent);
     return (
-        <div className='preview-container' style={{ backgroundColor: "red" }}>
+        <div className='preview-container'>
             <ReactMarkdown>
                 {blogContent.content}
             </ReactMarkdown>
