@@ -18,6 +18,7 @@ const CreatePage = () => {
   const [blogContent, setBlogContent] = useState(initialBlogContent)
   const [previewMode, setPreviewMode] = useState(false)
   const [imageSelected, setImageSelected] = useState(null)
+  let errors = {}
 
   
   const handleUploadResult = (success, data) => {
@@ -30,16 +31,36 @@ const CreatePage = () => {
       navigate('/error')
     }
   }
+  
+
+  const validateBlog = (blogData) => {
+    errors = {}
+    if(!blogData.title){
+      errors.title = "Title is a required field"
+    }
+    if(!blogData.content){
+      errors.content = "Content is a required field"
+    }else if(blogData.content.length > 49){
+      errors.content = "Please make sure your blog is atleast 50 characters"
+    }
+    return errors
+
+  }
 
   const uploadBlog = async (blogData) => {
-    if(imageSelected){
-      const res = await uploadImage(imageSelected)
-      const {data, success} = await postBlog({...blogData, banner: res.url})
-      handleUploadResult(success, data)
-    }else{
-      const {data, success} = await postBlog(blogData)
-      handleUploadResult(success, data)
+    const blogErrors = validateBlog(blogData)
+    if (Object.keys(blogErrors).length === 0){
+      if(imageSelected){
+        const res = await uploadImage(imageSelected)
+        const {data, success} = await postBlog({...blogData, banner: res.url})
+        handleUploadResult(success, data)
+      }else{
+        const {data, success} = await postBlog(blogData)
+        handleUploadResult(success, data)
+      }
+
     }
+   
   }
 
   const uploadImage= async (file) => {
@@ -85,6 +106,7 @@ const CreatePage = () => {
         onChange={(e)=>{
             setBlogContent({...blogContent, title: e.target.value})  
         }} />
+        {errors.title && <p className="error-txt">{errors.title}</p>}
 
         <label className='sr-only' htmlFor="blog-subtitle">Subtitle</label>
         <input placeholder='Article subtitle...(optional)' className='blog-subtitle-input' id="blog-subtitle" type="text" value={blogContent.subtitle} 
@@ -96,8 +118,9 @@ const CreatePage = () => {
         <div className="tools-row">
             <BsFillEyeFill onClick={()=>{setPreviewMode(true)}} className='icon-md' />
             <BsFillPencilFill onClick={()=>{setPreviewMode(false)}} className='icon-md' />
-          </div>
+        </div>
           {previewMode && <div className="divider mg-b-10 mg-t-10"></div>}
+          {errors.content && <p className="error-txt">{errors.content}</p>}
         {previewMode ?  <BlogPreview blogContent={blogContent} /> :
         <BlogInput setBlogContent={setBlogContent} blogContent={blogContent} />}
     </div>

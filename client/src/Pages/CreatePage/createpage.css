@@ -37,22 +37,14 @@
 }
 
 
-  .img-preview{
+.img-preview{
     height: 20rem;
-    width: 80%;
+    width: 95%;
     margin: auto;
     display: block;
+    margin-top: 10px;
     margin-bottom: 20px;
-}
-
-.img-upload-label{
-  background-color: indigo;
-  color: white;
-  padding: 0.5rem;
-  font-family: sans-serif;
-  border-radius: 0.3rem;
-  cursor: pointer;
-  margin-top: 1rem;
+    border-radius: 12px;
 }
 
 .tools-row{

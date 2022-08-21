@@ -27,10 +27,10 @@ app.get('/getBlogs', (req, res) => {
     })
 })
 
-app.get('/getBlog', (req, res) => {
+app.get('/getBlog/:id', (req, res) => {
     const { blogId } = req.body;
     console.log("BLOG ID", blogId)
-    BlogsModel.findById(blogId, (err, fetchedBlog) => {
+    BlogsModel.findById(req.params.id, (err, fetchedBlog) => {
         if (err) {
             res.json({
                 message: err.message,
@@ -56,7 +56,7 @@ app.post('/createBlog', async (req, res) => {
     }
 })
 
-app.delete('/deleteBlog', async (req, res) => {
+app.post('/deleteBlog', async (req, res) => {
     const { blogId } = req.body;
     BlogsModel.findByIdAndRemove(blogId, (err, deletedRecord) => {
         if (err) {
